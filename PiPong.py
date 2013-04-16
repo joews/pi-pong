@@ -14,7 +14,7 @@ from pygame import *
 
 from serial import Serial
 
-from PiPongSerial import WiimoteInputHandler
+from PiPongSerial import *
 from Ball import Ball
 from Bat import Bat
 from Text import Text
@@ -32,9 +32,6 @@ class PiPong:
 
 		self.debug = True
 
-		#Connect to the serial port
-		serial = Serial("/dev/ttyACM0", 115200)
-		
 		# Make the display size a member of the class
 		self.displaySize = (640, 480)
 		self.batSize = (8, 80)
@@ -58,13 +55,19 @@ class PiPong:
 	
 		#Input handlers for the bats
 		#TODO: AI, keyboard
-		#TODO: listen for input 1
-		wiimoteInput1 = WiimoteInputHandler(serial, self.displaySize, self.batSize, 0);
-		wiimoteInput2 = WiimoteInputHandler(serial, self.displaySize, self.batSize, 1);
+		#TODO factory to get the right input handler
+		#serial = Serial("/dev/ttyACM0", 115200)
+		#input1 = WiimoteInputHandler(serial, self.displaySize, self.batSize, 0);
+		#input1 = WiimoteInputHandler(serial, self.displaySize, self.batSize, 1);
+
+		#Do we see an increase in frame rate when not listening to Serial?
+		#Yes! up to 80fps on Xubuntu VM! need to investigate
+		input1 = NoOpInputHandler(self.displaySize)
+		input2 = NoOpInputHandler(self.displaySize)
 
 		# Create two bats, a ball and add them to a sprite group
-		self.player1Bat = Bat(self.displaySize, self.batSize, wiimoteInput1, "player1")
-		self.player2Bat = Bat(self.displaySize, self.batSize, wiimoteInput2, "player2")
+		self.player1Bat = Bat(self.displaySize, self.batSize, input1, "player1")
+		self.player2Bat = Bat(self.displaySize, self.batSize, input2, "player2")
 		self.ball = Ball(self.displaySize, self.player1Bat, self.player2Bat)
 
 		self.bat_sprites = sprite.Group(self.player1Bat, self.player2Bat)

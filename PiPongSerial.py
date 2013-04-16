@@ -14,6 +14,23 @@ WIICHUCK_ROLL_SENSITIVITY = 1.9;
 WIICHUCK_MIN_Y = -180 + WIICHUCK_Y_SENSITIVITY;
 WIICHUCK_MAX_Y = 240 - WIICHUCK_Y_SENSITIVITY;
 
+#An input handler that doesn't move the bat
+# - for testing
+class NoOpInputHandler(object):
+	
+	def __init__(self, pitchSize):
+		self.y = pitchSize[1] / 2
+
+	def update(self):
+		pass
+
+	def getY(self):
+		return self.y
+
+	def getRoll(self):
+		return 0
+
+
 
 class WiimoteInputHandler(object):
 
