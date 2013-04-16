@@ -14,7 +14,7 @@ from pygame import *
 
 from serial import Serial
 
-from PiPongSerial import *
+from InputHandler import *
 from Ball import Ball
 from Bat import Bat
 from Text import Text
@@ -62,8 +62,16 @@ class PiPong:
 
 		#Do we see an increase in frame rate when not listening to Serial?
 		#Yes! up to 80fps on Xubuntu VM! need to investigate
-		input1 = NoOpInputHandler(self.displaySize)
-		input2 = NoOpInputHandler(self.displaySize)
+		#input1 = NoOpInputHandler(self.displaySize)
+		#input2 = NoOpInputHandler(self.displaySize)
+
+		#TODO config!
+		inputType1 = "none"
+		inputType2 = "none"
+
+		inputHandlers = InputHandlers(self.displaySize)
+		input1 = inputHandlers.get_handler(inputType1, 0)
+		input2 = inputHandlers.get_handler(inputType2, 1)
 
 		# Create two bats, a ball and add them to a sprite group
 		self.player1Bat = Bat(self.displaySize, self.batSize, input1, "player1")
@@ -73,7 +81,7 @@ class PiPong:
 		self.bat_sprites = sprite.Group(self.player1Bat, self.player2Bat)
 		self.ball_sprites = sprite.Group(self.ball)
 
-		# Debugging text sprites
+		# Debugging sprites
 		self.fps_text = Text(30, 10)
 		self.debug_sprites = sprite.Group(self.fps_text)
 
