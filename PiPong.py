@@ -66,10 +66,10 @@ class PiPong:
 		#input2 = NoOpInputHandler(self.displaySize)
 
 		#TODO config!
-		inputType1 = "none"
-		inputType2 = "none"
+		inputType1 = "keyboard"
+		inputType2 = "keyboard"
 
-		inputHandlers = InputHandlers(self.displaySize)
+		inputHandlers = InputHandlers(self.displaySize, self.batSize)
 		input1 = inputHandlers.get_handler(inputType1, 0)
 		input2 = inputHandlers.get_handler(inputType2, 1)
 
@@ -132,23 +132,8 @@ class PiPong:
 				pygame.quit()
 				sys.exit()
 			
-			if event.type == KEYDOWN:
-				# Find which key was pressed and start moving appropriate bat
-				if event.key == K_s:
-					# Start moving bat
-					self.player1Bat.startMove("down")
-				elif event.key == K_w:
-					self.player1Bat.startMove("up")
-				if event.key == K_DOWN:
-					self.player2Bat.startMove("down")
-				elif event.key == K_UP:
-					self.player2Bat.startMove("up")
-			
-			if event.type == KEYUP:
-				if event.key == K_s or event.key == K_w:
-					self.player1Bat.stopMove()
-				elif event.key == K_DOWN or event.key == K_UP:
-					self.player2Bat.stopMove()
+			self.player1Bat.inputHandler.handle(event)
+			self.player2Bat.inputHandler.handle(event)
 				
 # The class for the background
 class Background:

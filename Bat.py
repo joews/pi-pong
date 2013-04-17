@@ -57,17 +57,6 @@ class Bat(sprite.Sprite):
 	def update(self):
 
 		self.inputHandler.update()
-		
-		#TODO to Keyboard input handler
-		#Keyboard
-		#if self.moving:
-		#	# Move the bat up or down if moving
-		#	if self.direction == "up":
-		#		self.rect.centery -= self.speed
-		#	elif self.direction == "down":
-		#		self.rect.centery += self.speed
-
-		#Wiimote
 		self.roll = self.inputHandler.getRoll()
 
 		old_center = self.rect.center

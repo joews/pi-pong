@@ -1,5 +1,5 @@
 from Util import *
-
+from pygame.locals import *
 
 #offser Wiichuck Y so horizontal Nunchuk yields zero
 WIICHUCK_ZERO_Y = 0;
@@ -18,12 +18,17 @@ WIICHUCK_MAX_Y = 240 - WIICHUCK_Y_SENSITIVITY;
 #TODO
 class InputHandlers(object):
 
-	def __init__(self, displaySize):
+	def __init__(self, displaySize, batSize):
 		self.displaySize = displaySize
+		self.batSize = batSize
 
 	def get_handler(self, type, playerId):
-		#TODO!
-		return NoOpInputHandler(self.displaySize)
+		if type == "none":
+			return NoOpInputHandler(self.displaySize)
+		elif type == "keyboard":
+			return KeyboardInputHandler(self.displaySize, self.batSize, playerId)
+
+		return None
 
 
 #An input handler that doesn't move the bat
@@ -46,25 +51,88 @@ class NoOpInputHandler(object):
 		return 0
 
 
-#TODO
 class KeyboardInputHandler(object):
 
-	def __init(self, pitchSize, batSize, playerId):
+	def __init__(self, pitchSize, batSize, playerId):
 		self.playerId = playerId
 		self.y = pitchSize[1] / 2
 
-	def handle(self, event):
-		#TODO key handling code
-		pass
+		#Map keys to players
+		self.upKey = (playerId == 0) and K_UP or K_w
+		self.downKey = (playerId == 0) and K_DOWN or K_s
+		self.leftKey = (playerId == 0) and K_LEFT or K_a
+		self.rightKey = (playerId == 0) and K_RIGHT or K_d
 
+		#From original PiPong
+		self.moving = False
+		self.direction = "none"
+		self.speed = 13
+
+		#Direction of rotation (degrees, negative allowed)
+		self.dir = 0
+
+		#Speed of rotation (#degrees to turn for each frame)
+		self.inc = 5
+		self.rolling = False
+		self.rollDirection = "none"
+
+	def handle(self, event):
+		if event.type == KEYDOWN:
+			if event.key == self.downKey:
+				self.startMove("down")
+			elif event.key == self.upKey:
+				self.startMove("up")
+
+			if event.key == self.leftKey:
+				self.startRoll("left")
+			elif event.key == self.rightKey:
+				self.startRoll("right")
+		
+		if event.type == KEYUP:
+			if event.key == self.upKey or event.key == self.downKey:
+				self.stopMove()
+			if event.key == self.rightKey or event.key == self.leftKey:
+				self.stopRoll()
+
+
+	#TODO constrain y and roll
 	def update(self):
-		pass
+		#Y
+		if self.moving:
+			# Move the bat up or down if moving
+			if self.direction == "up":
+				self.y -= self.speed
+			elif self.direction == "down":
+				self.y += self.speed
+
+		#roll
+		if self.rolling:
+			if self.rollDirection == "left":
+				self.dir -= self.inc
+			elif self.rollDirection == "right":
+				self.dir += self.inc
+
+	def startMove(self, direction):
+		self.direction = direction
+		self.moving = True
+
+	def stopMove(self):
+		self.moving = False
+
+	def startRoll(self, direction):
+		self.rollDirection = direction
+		self.rolling = True
+
+	def stopRoll(self):
+		self.rolling = False
 
 	def getY(self):
 		return self.y
 
 	def getRoll(self):
-		return 0
+		return self.dir
+
+
 
 #The default input handler
 class WiimoteInputHandler(object):
