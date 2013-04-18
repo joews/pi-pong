@@ -48,7 +48,7 @@ class PiPong:
 
 		# Initialise physics
 		self.space = pymunk.Space()
-		space.gravity = (0.0, 0)
+		self.space.gravity = (0.0, 0)
 
 		#Initialise sprites 			
 		# Create the background, passing through the display size
@@ -64,9 +64,9 @@ class PiPong:
 		input2 = inputHandlers.get_handler(inputType2, 1)
 
 		# Create two bats, a ball and add them to a sprite group
-		self.player1Bat = Bat(space, self.displaySize, self.batSize, input1, "player1")
-		self.player2Bat = Bat(space, self.displaySize, self.batSize, input2, "player2")
-		self.ball = Ball(space, self.displaySize, self.player1Bat, self.player2Bat)
+		self.player1Bat = Bat(self.space, self.displaySize, self.batSize, input1, "player1")
+		self.player2Bat = Bat(self.space, self.displaySize, self.batSize, input2, "player2")
+		self.ball = Ball(self.space, self.displaySize, self.player1Bat, self.player2Bat)
 
 		self.bat_sprites = sprite.Group(self.player1Bat, self.player2Bat)
 		self.ball_sprites = sprite.Group(self.ball)
@@ -102,7 +102,7 @@ class PiPong:
 
 
 			#tick physics
-			space.step(1/50.0)
+			self.space.step(1/50.0)
 
 			#tick graphics
 			pygame.display.flip()

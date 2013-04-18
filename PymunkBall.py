@@ -4,6 +4,7 @@ from pygame import *
 import random
 from math import sin, cos, pi, atan2, hypot, sqrt, radians, degrees
 import pymunk
+from Util import *
 
 TWO_PI = 2 * pi
 
@@ -27,9 +28,9 @@ class Ball(sprite.Sprite):
 		self.mass = 1
 		self.radius = 8
 		self.inertia = pymunk.moment_for_circle(self.mass, 0, self.radius)
-		self.body = pymunk.Body(mass, inertia)
-		self.shape = pymunk.Circle(body, radius)
-		self.space.add(body, shape)
+		self.body = pymunk.Body(self.mass, self.inertia)
+		self.shape = pymunk.Circle(self.body, self.radius)
+		space.add(self.body, self.shape)
 		self.shape.elasticity = 0.99 #perfect bounce
 
 		#Initialise graphics		
@@ -38,7 +39,7 @@ class Ball(sprite.Sprite):
 		self.image.set_colorkey((255, 0, 255))
 
 		#Initial position of the ball is set by reset
-		pygame.draw.circle(screen, (255, 255, 255), (0, 0), self.radius, 2)
+		pygame.draw.circle(self.image, (255, 255, 255), (0, 0), self.radius, 2)
 		self.rect = self.image.get_rect()
 			
 		# Work out a speed (pick a value that works for pymunk)

@@ -3,6 +3,7 @@ from pygame.locals import *
 from pygame import *
 import math
 import pymunk
+from Util import *
 
 
 # The class for the bats on either side
@@ -20,20 +21,20 @@ class Bat(sprite.Sprite):
 
 		#Initial position
 		if player == "player1":
-			x = displaySize[0] / 20
+			self.x = displaySize[0] / 20
 		elif player == "player2":
-			x displaySize[0] - displaySize[0] / 20
+			self.x = displaySize[0] - displaySize[0] / 20
 
 		y = displaySize[1] / 2
-		position = (x, y)
+		position = (self.x, y)
 
 		#Initialise physics
 		self.mass = pymunk.inf #don't move when the ball hits
 		self.inertia = pymunk.inf #don't rotate when the ball hits
-		self.body = pymunk.Body(mass, inertia)
+		self.body = pymunk.Body(self.mass, self.inertia)
 		self.body.position = position
-		self.shape = pymunk.Poly.create_box(body, (width, height))
-		self.space.add(body, shape)
+		self.shape = pymunk.Poly.create_box(self.body, (width, height))
+		space.add(self.body, self.shape)
 		self.shape.elasticity = 0.99 #perfect bounce
 		self.shape.friction = 0
 
@@ -74,16 +75,16 @@ class Bat(sprite.Sprite):
 		newY = self.inputHandler.getY()
 
 		#Invert roll to account for anticlockwise rotation
-		degrees = -self.roll	
-		radians = radians(degrees)	
+		angle_degrees = -self.roll	
+		angle_radians = radians(angle_degrees)	
 
 		#Rotate
 		# - physics
-		body.angle = radians
+		self.body.angle = angle_radians
 
 		# - graphics
 		old_center = self.rect.center
-		self.image = pygame.transform.rotate(self.image_master, degrees)
+		self.image = pygame.transform.rotate(self.image_master, angle_degrees)
 		self.rect = self.image.get_rect()
 		self.rect.center = old_center
 
@@ -92,9 +93,9 @@ class Bat(sprite.Sprite):
 		#Move
 		# - physics
 		position = (self.x, newY)
-		body.position = position
+		self.body.position = position
 		# - graphics
-		self.rect.center = to_pygame_tuple(newY)
+		self.rect.center = to_pygame_tuple((self.x, newY))
 		
 				
 	def stopMove(self):
