@@ -23,13 +23,15 @@ def add_ball(space):
 	body.position = x, 300 # 3
 
 	#Make the ball move
-	body.apply_impulse((-250, 0), (0,0))
+	#body.apply_impulse((250, 0), (10,10))
+	body.velocity = (-500, 0)
+	#body.angle = math.pi / 2
 	shape = pymunk.Circle(body, radius) # 4
 	space.add(body, shape) # 5
 
 	#make the ball perfectly bouncy
-	shape.elasticity = 1.0
-	shape.friction = 0
+	shape.elasticity = 0.99
+	#shape.friction = 0
 	return shape
 
 
@@ -40,10 +42,10 @@ def draw_ball(screen, ball):
 def add_box(space):
 	body = pymunk.Body() # static 
 	body.position = (300, 300)
-	top = pymunk.Segment(body, (290, 290), (-290, 290), 1) 
-	left = pymunk.Segment(body, (-290, -290), (-290, 290), 1) 
-	bottom = pymunk.Segment(body, (-290, -290), (290, -290), 1) 
-	right = pymunk.Segment(body, (290, 290), (290, -290), 1) 
+	top = pymunk.Segment(body, (290, 290), (-290, 290), 5) 
+	left = pymunk.Segment(body, (-290, -290), (-290, 290), 5) 
+	bottom = pymunk.Segment(body, (-290, -290), (290, -290), 5) 
+	right = pymunk.Segment(body, (290, 290), (290, -290), 5) 
 
 	#Make the walls perfectly bouncy
 	top.elasticity = 0.99
@@ -62,7 +64,7 @@ def draw_box(screen, lines):
 		pv2 = body.position + line.b.rotated(body.angle)
 		p1 = to_pygame(pv1) # 2
 		p2 = to_pygame(pv2)
-		pygame.draw.lines(screen, THECOLORS["black"], False, [p1,p2])
+		pygame.draw.lines(screen, (255), False, [p1,p2])
 
 #My custom code - add a bat object that can rotate
 def add_bat(space):
@@ -143,7 +145,7 @@ def main():
 			bat.body.angle -= math.pi / 10
 
 			#Debug: print fps every few frames
-			print clock.get_fps()
+			#print clock.get_fps()
 
 		screen.fill(THECOLORS["white"])
 		
@@ -153,11 +155,11 @@ def main():
 		draw_box(screen, box)
 		draw_bat(screen, bat)
 		
-		space.step(1/100.0)
+		space.step(1/50.0)
 		
 		pygame.display.update()
-		#pygame.display.flip()
-		clock.tick(100)
+		pygame.display.flip()
+		clock.tick(30)
 
 
 		

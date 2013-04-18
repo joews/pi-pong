@@ -15,3 +15,11 @@ def map(x, minIn, maxIn, minOut, maxOut):
 
 def radians(degrees):
 	return degrees * piOver180
+
+def to_pygame(p):
+	"""Small hack to convert pymunk to pygame coordinates"""
+	return int(p.x), int(-p.y+600)
+
+def to_pygame_tuple(p):
+	"""Small hack to convert pymunk to pygame coordinates"""
+	return int(p[0]), int(-p[1]+600)
