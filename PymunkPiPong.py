@@ -14,7 +14,6 @@ from pygame import *
 
 import pymunk
 
-from serial import Serial
 
 from InputHandler import *
 from PymunkBall import Ball
@@ -56,8 +55,8 @@ class PiPong:
 	
 		#Input handlers for the bats
 		#TODO config!
-		inputType1 = "keyboard"
-		inputType2 = "keyboard"
+		inputType1 = "nunchuk"
+		inputType2 = "none"
 
 		inputHandlers = InputHandlers(self.displaySize, self.batSize)
 		input1 = inputHandlers.get_handler(inputType1, 0)

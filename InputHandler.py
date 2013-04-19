@@ -1,5 +1,7 @@
 from Util import *
 from pygame.locals import *
+from serial import Serial
+
 
 #offser Wiichuck Y so horizontal Nunchuk yields zero
 WIICHUCK_ZERO_Y = 0;
@@ -15,20 +17,29 @@ WIICHUCK_MIN_Y = -180 + WIICHUCK_Y_SENSITIVITY;
 WIICHUCK_MAX_Y = 240 - WIICHUCK_Y_SENSITIVITY;
 
 #Factory class: get the player InputHandlers
-#TODO
 class InputHandlers(object):
 
 	def __init__(self, displaySize, batSize):
 		self.displaySize = displaySize
 		self.batSize = batSize
+		self.serial = None
 
 	def get_handler(self, type, playerId):
 		if type == "none":
 			return NoOpInputHandler(self.displaySize)
 		elif type == "keyboard":
 			return KeyboardInputHandler(self.displaySize, self.batSize, playerId)
+		elif type == "nunchuk":
+			return WiimoteInputHandler(self.get_serial(), self.displaySize, self.batSize, playerId)
 
 		return None
+
+	def get_serial(self):
+		if self.serial == None:
+			self.serial = Serial('/dev/ttyACM0', 115200)
+
+		return self.serial
+
 
 
 #An input handler that doesn't move the bat
@@ -153,7 +164,7 @@ class WiimoteInputHandler(object):
 
 	def update(self):
 		self._handleSerialInput()
-		#print self.y, self.roll
+		print self.y, self.roll
 
 	def getY(self):
 		return self.y
@@ -197,5 +208,5 @@ class WiimoteInputHandler(object):
 		self.y = map(constrainedY, WIICHUCK_MIN_Y, WIICHUCK_MAX_Y, 40, 440)
 		
 		compensatedRoll = rawRoll * WIICHUCK_ROLL_SENSITIVITY
-		self.roll = constrain(compensatedRoll, -90, 90)
-		#self.roll = map(compensatedRoll, -255, 255, -90, 90)
+		#contrainedRoll = constrain(compensatedRoll, -90, 90)
+		self.roll = map(compensatedRoll, -255, 255, -90, 90)
