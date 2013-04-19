@@ -5,6 +5,7 @@ import random
 from math import sin, cos, pi, atan2, hypot, sqrt, radians, degrees
 import pymunk
 from Util import *
+import Config
 
 TWO_PI = 2 * pi
 
@@ -43,7 +44,7 @@ class Ball(sprite.Sprite):
 		self.rect = self.image.get_rect()
 			
 		# Work out a speed (pick a value that works for pymunk)
-		self.speed = 500
+		self.speed = Config.ballVelocity
 	
 		# Reset the ball
 		self.reset()

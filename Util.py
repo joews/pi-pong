@@ -20,6 +20,10 @@ def to_pygame(p):
 	"""Small hack to convert pymunk to pygame coordinates"""
 	return int(p.x), int(-p.y+480)
 
+def to_pygame_y(y):
+	"""Small hack to convert pymunk to pygame coordinates"""
+	return int(-y+480)
+
 def to_pygame_tuple(p):
 	"""Small hack to convert pymunk to pygame coordinates"""
 	return int(p[0]), int(-p[1]+480)

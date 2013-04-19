@@ -7,14 +7,14 @@ from serial import Serial
 WIICHUCK_ZERO_Y = 0;
 
 #Control sensitivity of input
-WIICHUCK_Y_SENSITIVITY = 40;
+WIICHUCK_Y_SENSITIVITY = 50;
 WIICHUCK_ROLL_SENSITIVITY = 1.9;
 
 #The limits of the Wiichuck input
 #Actually slightly within limits so we don't have to strain
 # to reach the extremes
 WIICHUCK_MIN_Y = -180 + WIICHUCK_Y_SENSITIVITY;
-WIICHUCK_MAX_Y = 240 - WIICHUCK_Y_SENSITIVITY;
+WIICHUCK_MAX_Y = 210 - WIICHUCK_Y_SENSITIVITY;
 
 #Factory class: get the player InputHandlers
 class InputHandlers(object):
@@ -106,8 +106,6 @@ class KeyboardInputHandler(object):
 			if event.key == self.rightKey or event.key == self.leftKey:
 				self.stopRoll()
 
-
-	#TODO constrain y and roll
 	def update(self):
 		#Y
 		if self.moving:
@@ -164,7 +162,7 @@ class WiimoteInputHandler(object):
 
 	def update(self):
 		self._handleSerialInput()
-		print self.y, self.roll
+		#print self.y, self.roll
 
 	def getY(self):
 		return self.y
@@ -174,11 +172,12 @@ class WiimoteInputHandler(object):
 
 	def _readSerial(self):
 		#Read raw values from the serial port
-		self.serial.flush()
+		
 		line = ""
 		y, roll = (0, 0)
 
 		while "," not in line:
+			self.serial.flushInput()
 			line = self.serial.readline()
 			try	:	
 				#All players are reported on the same line
@@ -203,10 +202,15 @@ class WiimoteInputHandler(object):
 		(rawRoll, rawY) = self._readSerial()
 
 		compensatedY = rawY - WIICHUCK_ZERO_Y
-		constrainedY = constrain(rawY, WIICHUCK_MIN_Y, WIICHUCK_MAX_Y)
-		
-		self.y = map(constrainedY, WIICHUCK_MIN_Y, WIICHUCK_MAX_Y, 40, 440)
+		constrainedY = constrain(compensatedY, WIICHUCK_MIN_Y, WIICHUCK_MAX_Y)
+		mappedY = map(constrainedY, WIICHUCK_MIN_Y, WIICHUCK_MAX_Y, 40, 440)
+		self.y = self.smoothY(mappedY)
 		
 		compensatedRoll = rawRoll * WIICHUCK_ROLL_SENSITIVITY
-		#contrainedRoll = constrain(compensatedRoll, -90, 90)
+		contrainedRoll = constrain(compensatedRoll, -90, 90)
 		self.roll = map(compensatedRoll, -255, 255, -90, 90)
+
+	#Smooth y input
+	#TODO!
+	def smoothY(self, y):
+		return y

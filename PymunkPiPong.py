@@ -23,6 +23,8 @@ from Text import Text
 from Util import *
 from Border import Border
 
+import Config
+
 FRAME_RATE = 180
 
 
@@ -32,8 +34,7 @@ class PiPong:
 	
 	def __init__(self):
 
-		#TODO config
-		self.debug = True
+		self.debug = Config.debug
 
 		self.displaySize = (640, 480)
 		self.batSize = (8, 80)
@@ -55,8 +56,8 @@ class PiPong:
 	
 		#Input handlers for the bats
 		#TODO config!
-		inputType1 = "nunchuk"
-		inputType2 = "none"
+		inputType1 = Config.player1Input
+		inputType2 = Config.player2Input
 
 		inputHandlers = InputHandlers(self.displaySize, self.batSize)
 		input1 = inputHandlers.get_handler(inputType1, 0)
@@ -101,7 +102,7 @@ class PiPong:
 
 
 			#tick physics
-			self.space.step(1/50.0)
+			self.space.step(1/Config.physicsSpeed)
 
 			#tick graphics
 			pygame.display.flip()

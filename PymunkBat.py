@@ -27,7 +27,6 @@ class Bat(sprite.Sprite):
 
 		y = 0#displaySize[1] / 2
 		position = (self.x, y)
-		print position
 
 		#Initialise physics
 		self.mass = pymunk.inf #don't move when the ball hits
@@ -73,7 +72,9 @@ class Bat(sprite.Sprite):
 		#Get new input
 		self.inputHandler.update()
 		self.roll = self.inputHandler.getRoll()
-		newY = self.inputHandler.getY()
+
+		#Invert y for pygame's inverted y axis
+		newY = to_pygame_y(self.inputHandler.getY())
 
 		#Invert roll to account for anticlockwise rotation
 		angle_degrees = -self.roll	

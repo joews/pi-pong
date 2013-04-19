@@ -66,7 +66,7 @@ class PiPong:
 		#input2 = NoOpInputHandler(self.displaySize)
 
 		#TODO config!
-		inputType1 = "keyboard"
+		inputType1 = "nunchuk"
 		inputType2 = "keyboard"
 
 		inputHandlers = InputHandlers(self.displaySize, self.batSize)
