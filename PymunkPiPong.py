@@ -22,6 +22,7 @@ from PymunkBat import Bat
 from Text import Text
 
 from Util import *
+from Border import Border
 
 FRAME_RATE = 180
 
@@ -51,8 +52,7 @@ class PiPong:
 		self.space.gravity = (0.0, 0)
 
 		#Initialise sprites 			
-		# Create the background, passing through the display size
-		self.background = Background(self.displaySize)
+		self.background = Background(self.space, self.displaySize)
 	
 		#Input handlers for the bats
 		#TODO config!
@@ -132,8 +132,9 @@ class PiPong:
 # The class for the background
 class Background:
 	
-	def __init__(self, displaySize):
+	def __init__(self, space, displaySize):
 		
+		self.space = space
 		# Set our image to a new surface, the size of the screen rectangle
 		self.image = Surface(displaySize)
 		
@@ -147,6 +148,43 @@ class Background:
 		lineRect = Rect(0, 0, lineWidth, displaySize[1])
 		lineRect.centerx  = displaySize[0] / 2
 		draw.rect(self.image, (255, 255, 255), lineRect)
+
+		#Create invisible top and bottom static objects so the ball bounces
+		Border(space, self.image, displaySize, 0)
+		Border(space, self.image, displaySize, displaySize[1])
+
+	def build_top(self):
+		body = pymunk.Body() # static 
+		body.position = (0, 470)
+		line = pymunk.Segment(body, (0, 0), (640, 0), 1) 
+
+		#Make the walls perfectly bouncy
+		line.elasticity = 0.99
+
+		#Static shapes, so only add the Segments, not the body
+		self.space.add(line)
+		#self.draw_line(line, (255,0 ,0))
+
+	def build_bottom(self):
+		body = pymunk.Body() # static 
+		body.position = (0, 0)
+		line = pymunk.Segment(body, (0, 10), (640, 10), 1) 
+
+		#Make the walls perfectly bouncy
+		line.elasticity = 0.99
+
+		#Static shapes, so only add the Segments, not the body
+		self.space.add(line)
+		#self.draw_line(line, (0, 0 ,255))
+
+	#Debug
+	def draw_line(self, line, color):
+		body = line.body
+		pv1 = body.position + line.a.rotated(body.angle) # 1
+		pv2 = body.position + line.b.rotated(body.angle)
+		p1 = to_pygame(pv1) # 2
+		p2 = to_pygame(pv2)
+		pygame.draw.lines(self.image, color, False, [p1,p2])
 		
 	def draw(self, display):
 			

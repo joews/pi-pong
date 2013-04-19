@@ -58,10 +58,11 @@ class KeyboardInputHandler(object):
 		self.y = pitchSize[1] / 2
 
 		#Map keys to players
-		self.upKey = (playerId == 0) and K_UP or K_w
-		self.downKey = (playerId == 0) and K_DOWN or K_s
-		self.leftKey = (playerId == 0) and K_LEFT or K_a
-		self.rightKey = (playerId == 0) and K_RIGHT or K_d
+		#Invert up/down because of pygame's inverted y axis
+		self.upKey = (playerId == 1) and K_DOWN or K_s
+		self.downKey = (playerId == 1) and K_UP or K_w
+		self.leftKey = (playerId == 1) and K_LEFT or K_a
+		self.rightKey = (playerId == 1) and K_RIGHT or K_d
 
 		#From original PiPong
 		self.moving = False

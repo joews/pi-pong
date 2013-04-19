@@ -25,8 +25,9 @@ class Bat(sprite.Sprite):
 		elif player == "player2":
 			self.x = displaySize[0] - displaySize[0] / 20
 
-		y = displaySize[1] / 2
+		y = 0#displaySize[1] / 2
 		position = (self.x, y)
+		print position
 
 		#Initialise physics
 		self.mass = pymunk.inf #don't move when the ball hits
